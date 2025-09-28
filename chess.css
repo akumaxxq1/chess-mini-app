@@ -466,46 +466,47 @@ body {
     flex-shrink: 0; /* Предотвращаем сжатие */
 }
 
-/* Разметка поля - КАРДИНАЛЬНО ИСПРАВЛЕННАЯ версия */
+/* Разметка поля - СУПЕР ВИДИМАЯ версия */
 .chess-coordinates {
     position: absolute !important;
-    font-size: 16px !important; /* Увеличиваем размер */
-    font-weight: bold !important;
+    font-size: 18px !important; /* ЕЩЕ больше размер */
+    font-weight: 900 !important; /* МАКСИМАЛЬНО жирный */
     color: #000000 !important;
     user-select: none;
     pointer-events: none;
-    z-index: 100 !important; /* Увеличиваем z-index */
-    background: rgba(255, 255, 255, 0.9) !important; /* Более яркий фон */
-    padding: 4px 6px !important; /* Увеличиваем padding */
-    border-radius: 4px !important;
-    border: 1px solid #000000 !important; /* Добавляем границу */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important; /* Добавляем тень */
+    z-index: 1000 !important; /* МАКСИМАЛЬНЫЙ z-index */
+    background: #ffffff !important; /* ЧИСТО белый фон */
+    padding: 6px 8px !important; /* ЕЩЕ больше padding */
+    border-radius: 6px !important;
+    border: 2px solid #000000 !important; /* ТОЛСТАЯ граница */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important; /* СИЛЬНАЯ тень */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important; /* Тень текста */
 }
 
 .chess-coordinates.letters {
-    bottom: -30px !important; /* Увеличиваем отступ */
+    bottom: -35px !important; /* ЕЩЕ больше отступ */
     left: 0 !important;
     right: 0 !important;
     display: flex !important;
     justify-content: space-between !important;
-    padding: 0 8px !important; /* Увеличиваем padding */
+    padding: 0 12px !important; /* ЕЩЕ больше padding */
 }
 
 .chess-coordinates.numbers {
     top: 0 !important;
     bottom: 0 !important;
-    left: -30px !important; /* Увеличиваем отступ */
+    left: -35px !important; /* ЕЩЕ больше отступ */
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 8px 0 !important; /* Увеличиваем padding */
+    padding: 12px 0 !important; /* ЕЩЕ больше padding */
 }
 
 .chess-board-container {
     position: relative !important;
     display: inline-block !important;
-    margin: 30px !important; /* Увеличиваем отступ для координат */
-    padding: 10px !important; /* Добавляем padding */
+    margin: 40px !important; /* ЕЩЕ больше отступ для координат */
+    padding: 15px !important; /* ЕЩЕ больше padding */
 }
 
 /* ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ - убираем ВСЕ искажения */

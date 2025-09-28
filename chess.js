@@ -25,6 +25,9 @@ let gameState = {
     winner: null
 };
 
+// Gemini AI для умных ходов
+let geminiAI = null;
+
 // Инициализация приложения
 function initializeApp() {
     setupEventListeners();
@@ -110,6 +113,14 @@ function startNewGame() {
     gameState.possibleMoves = [];
     gameState.gameOver = false;
     gameState.winner = null;
+    
+    // Инициализируем Gemini AI
+    if (typeof GeminiChessAI !== 'undefined') {
+        geminiAI = new GeminiChessAI();
+        console.log('🧠 Gemini AI инициализирован для умных ходов!');
+    } else {
+        console.warn('⚠️ Gemini AI не загружен, используем простой AI');
+    }
     
     updateGameInfo();
     showScreen('gameScreen');
@@ -501,20 +512,33 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
     }, 500); // Увеличиваем задержку для стабильности
 }
 
-// Ход AI - Финальная версия
-function makeAIMove() {
+// Ход AI - GEMINI РЕВОЛЮЦИОННАЯ версия
+async function makeAIMove() {
     if (gameState.gameOver) return;
     
     // Показываем индикатор загрузки
     showAILoading();
     
-    // Простая задержка для стабильности
-    setTimeout(() => {
-        const bestMove = getBestMove();
+    try {
+        let bestMove = null;
+        
+        // Используем Gemini AI если доступен
+        if (geminiAI) {
+            console.log('🧠 Получаем умный ход от Gemini AI...');
+            bestMove = await geminiAI.getSmartMove(gameState.board, currentDifficulty, false);
+            console.log('🎯 Gemini AI предложил ход:', bestMove);
+        }
+        
+        // Если Gemini не сработал, используем простой AI
+        if (!bestMove) {
+            console.log('⚠️ Используем простой AI как резерв');
+            bestMove = getBestMove();
+        }
+        
         if (bestMove) {
             const [fromRow, fromCol, toRow, toCol] = bestMove;
             
-            // Выполняем ход AI напрямую
+            // Выполняем ход AI
             const piece = gameState.board[fromRow][fromCol];
             gameState.board[toRow][toCol] = piece;
             gameState.board[fromRow][fromCol] = '';
@@ -533,8 +557,28 @@ function makeAIMove() {
         // Передать ход обратно игроку
         gameState.currentPlayer = 'white';
         updateGameInfo();
-        hideAILoading();
-    }, 300); // Оптимальная задержка
+        
+    } catch (error) {
+        console.error('❌ Ошибка Gemini AI:', error);
+        // Используем простой AI как резерв
+        const bestMove = getBestMove();
+        if (bestMove) {
+            const [fromRow, fromCol, toRow, toCol] = bestMove;
+            const piece = gameState.board[fromRow][fromCol];
+            gameState.board[toRow][toCol] = piece;
+            gameState.board[fromRow][fromCol] = '';
+            createChessBoard();
+            if (checkGameOver()) {
+                showGameOver();
+                hideAILoading();
+                return;
+            }
+        }
+        gameState.currentPlayer = 'white';
+        updateGameInfo();
+    }
+    
+    hideAILoading();
 }
 
 // Показать индикатор загрузки AI
@@ -1104,40 +1148,80 @@ function updateGameInfo() {
     }
 }
 
-// Показать СУПЕР УМНУЮ подсказку
-function showHint() {
+// Показать GEMINI УМНУЮ подсказку
+async function showHint() {
     if (gameState.currentPlayer !== 'white' || gameState.gameOver) {
         return;
     }
     
-    const moves = getAllPossibleMoves('white');
-    if (moves.length > 0) {
-        // Находим СУПЕР лучший ход для белых
-        const bestMove = getSuperBestMoveForWhite(moves);
-        const [fromRow, fromCol, toRow, toCol] = bestMove;
+    try {
+        let bestMove = null;
         
-        // Подсветить рекомендуемый ход
-        const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
-        const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
+        // Используем Gemini AI для подсказки если доступен
+        if (geminiAI) {
+            console.log('💡 Получаем умную подсказку от Gemini AI...');
+            bestMove = await geminiAI.getSmartHint(gameState.board, currentDifficulty, true);
+            console.log('🎯 Gemini AI подсказал ход:', bestMove);
+        }
         
-        if (fromSquare && toSquare) {
-            fromSquare.style.background = 'rgba(255, 193, 7, 0.8)';
-            toSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+        // Если Gemini не сработал, используем простую подсказку
+        if (!bestMove) {
+            console.log('⚠️ Используем простую подсказку как резерв');
+            const moves = getAllPossibleMoves('white');
+            if (moves.length > 0) {
+                bestMove = getSuperBestMoveForWhite(moves);
+            }
+        }
+        
+        if (bestMove) {
+            const [fromRow, fromCol, toRow, toCol] = bestMove;
             
-            // Добавляем СУПЕР анимацию
-            fromSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
-            toSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
-            fromSquare.style.border = '2px solid #ffc107';
-            toSquare.style.border = '2px solid #ffc107';
+            // Подсветить рекомендуемый ход
+            const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
+            const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
             
-            setTimeout(() => {
-                fromSquare.style.background = '';
-                toSquare.style.background = '';
-                fromSquare.style.boxShadow = '';
-                toSquare.style.boxShadow = '';
-                fromSquare.style.border = '';
-                toSquare.style.border = '';
-            }, 4000); // Увеличиваем время показа
+            if (fromSquare && toSquare) {
+                fromSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+                toSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+                
+                // Добавляем СУПЕР анимацию
+                fromSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
+                toSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
+                fromSquare.style.border = '2px solid #ffc107';
+                toSquare.style.border = '2px solid #ffc107';
+                
+                setTimeout(() => {
+                    fromSquare.style.background = '';
+                    toSquare.style.background = '';
+                    fromSquare.style.boxShadow = '';
+                    toSquare.style.boxShadow = '';
+                    fromSquare.style.border = '';
+                    toSquare.style.border = '';
+                }, 4000); // Увеличиваем время показа
+            }
+        }
+        
+    } catch (error) {
+        console.error('❌ Ошибка Gemini подсказки:', error);
+        // Используем простую подсказку как резерв
+        const moves = getAllPossibleMoves('white');
+        if (moves.length > 0) {
+            const bestMove = getSuperBestMoveForWhite(moves);
+            if (bestMove) {
+                const [fromRow, fromCol, toRow, toCol] = bestMove;
+                const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
+                const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
+                
+                if (fromSquare && toSquare) {
+                    fromSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+                    toSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+                    
+                    setTimeout(() => {
+                        fromSquare.style.background = '';
+                        toSquare.style.background = '';
+                    }, 3000);
+                }
+            }
         }
     }
 }
