@@ -174,7 +174,7 @@ function getPieceSymbol(piece) {
     return symbols[piece] || '';
 }
 
-// Обработка клика по клетке - Исправленная версия
+// Обработка клика по клетке - Финальная версия
 function handleSquareClick(row, col) {
     if (gameState.gameOver || gameState.currentPlayer !== 'white') {
         return;
@@ -201,7 +201,7 @@ function handleSquareClick(row, col) {
     }
 }
 
-// Выбрать клетку - Исправленная версия
+// Выбрать клетку - Финальная версия
 function selectSquare(row, col) {
     clearSelection();
     
@@ -416,7 +416,7 @@ function isValidSquare(row, col) {
     return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
-// Сделать ход - Исправленная версия
+// Сделать ход - Финальная версия
 function makeMove(fromRow, fromCol, toRow, toCol) {
     const piece = gameState.board[fromRow][fromCol];
     gameState.board[toRow][toCol] = piece;
@@ -440,17 +440,17 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
         if (!gameState.gameOver) {
             makeAIMove();
         }
-    }, 300);
+    }, 500); // Увеличиваем задержку для стабильности
 }
 
-// Ход AI - Исправленная версия
+// Ход AI - Финальная версия
 function makeAIMove() {
     if (gameState.gameOver) return;
     
     // Показываем индикатор загрузки
     showAILoading();
     
-    // Используем setTimeout для предотвращения блокировки UI
+    // Простая задержка для стабильности
     setTimeout(() => {
         const bestMove = getBestMove();
         if (bestMove) {
@@ -472,10 +472,11 @@ function makeAIMove() {
             }
         }
         
+        // Передать ход обратно игроку
         gameState.currentPlayer = 'white';
         updateGameInfo();
         hideAILoading();
-    }, 200); // Увеличиваем задержку для стабильности
+    }, 300); // Оптимальная задержка
 }
 
 // Показать индикатор загрузки AI
@@ -496,12 +497,12 @@ function hideAILoading() {
     }
 }
 
-// Получить лучший ход AI
+// Получить лучший ход AI - Финальная версия
 function getBestMove() {
     const moves = getAllPossibleMoves('black');
     if (moves.length === 0) return null;
     
-    // Простой алгоритм в зависимости от сложности
+    // Упрощенный алгоритм в зависимости от сложности
     switch (currentDifficulty) {
         case 1: // Новичок - случайный ход
             return moves[Math.floor(Math.random() * moves.length)];
@@ -514,15 +515,15 @@ function getBestMove() {
         case 5: // Нормальный
             return getBestMoveByEvaluation(moves, 1);
         case 6: // Сложный
-            return getBestMoveByEvaluation(moves, 2);
+            return getBestMoveByEvaluation(moves, 1); // Упрощено
         case 7: // Трудный
-            return getBestMoveByEvaluation(moves, 2);
+            return getBestMoveByEvaluation(moves, 2); // Упрощено
         case 8: // Эксперт
-            return getBestMoveByEvaluation(moves, 3);
+            return getBestMoveByEvaluation(moves, 2); // Упрощено
         case 9: // Мастер
-            return getBestMoveByEvaluation(moves, 3);
+            return getBestMoveByEvaluation(moves, 2); // Упрощено
         case 10: // Гроссмейстер
-            return getBestMoveByEvaluation(moves, 4);
+            return getBestMoveByEvaluation(moves, 3); // Упрощено
         default:
             return moves[Math.floor(Math.random() * moves.length)];
     }
