@@ -22,8 +22,7 @@ let gameState = {
     selectedSquare: null,
     possibleMoves: [],
     gameOver: false,
-    winner: null,
-    isProcessing: false // Флаг для предотвращения множественных кликов
+    winner: null
 };
 
 // Инициализация приложения
@@ -175,9 +174,9 @@ function getPieceSymbol(piece) {
     return symbols[piece] || '';
 }
 
-// Обработка клика по клетке - Оптимизированная версия
+// Обработка клика по клетке - Исправленная версия
 function handleSquareClick(row, col) {
-    if (gameState.gameOver || gameState.currentPlayer !== 'white' || gameState.isProcessing) {
+    if (gameState.gameOver || gameState.currentPlayer !== 'white') {
         return;
     }
     
@@ -202,40 +201,30 @@ function handleSquareClick(row, col) {
     }
 }
 
-// Выбрать клетку - Оптимизированная версия
+// Выбрать клетку - Исправленная версия
 function selectSquare(row, col) {
-    // Предотвращаем множественные клики
-    if (gameState.isProcessing) return;
-    gameState.isProcessing = true;
-    
     clearSelection();
     
     gameState.selectedSquare = [row, col];
+    gameState.possibleMoves = getPossibleMoves(row, col);
     
-    // Используем setTimeout для предотвращения блокировки UI
-    setTimeout(() => {
-        gameState.possibleMoves = getPossibleMoves(row, col);
-        
-        // Визуальное выделение
-        const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-        if (square) {
-            square.classList.add('selected');
-        }
-        
-        // Показать возможные ходы
-        gameState.possibleMoves.forEach(([moveRow, moveCol]) => {
-            const moveSquare = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
-            if (moveSquare) {
-                if (gameState.board[moveRow][moveCol]) {
-                    moveSquare.classList.add('possible-capture');
-                } else {
-                    moveSquare.classList.add('possible-move');
-                }
+    // Визуальное выделение
+    const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+    if (square) {
+        square.classList.add('selected');
+    }
+    
+    // Показать возможные ходы
+    gameState.possibleMoves.forEach(([moveRow, moveCol]) => {
+        const moveSquare = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
+        if (moveSquare) {
+            if (gameState.board[moveRow][moveCol]) {
+                moveSquare.classList.add('possible-capture');
+            } else {
+                moveSquare.classList.add('possible-move');
             }
-        });
-        
-        gameState.isProcessing = false;
-    }, 10);
+        }
+    });
 }
 
 // Очистить выделение
@@ -427,11 +416,8 @@ function isValidSquare(row, col) {
     return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
-// Сделать ход - Оптимизированная версия
+// Сделать ход - Исправленная версия
 function makeMove(fromRow, fromCol, toRow, toCol) {
-    if (gameState.isProcessing) return;
-    gameState.isProcessing = true;
-    
     const piece = gameState.board[fromRow][fromCol];
     gameState.board[toRow][toCol] = piece;
     gameState.board[fromRow][fromCol] = '';
@@ -442,7 +428,6 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
     // Проверить окончание игры
     if (checkGameOver()) {
         showGameOver();
-        gameState.isProcessing = false;
         return;
     }
     
@@ -455,10 +440,10 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
         if (!gameState.gameOver) {
             makeAIMove();
         }
-    }, 300); // Уменьшаем задержку
+    }, 300);
 }
 
-// Ход AI - Оптимизированная версия
+// Ход AI - Исправленная версия
 function makeAIMove() {
     if (gameState.gameOver) return;
     
@@ -470,14 +455,27 @@ function makeAIMove() {
         const bestMove = getBestMove();
         if (bestMove) {
             const [fromRow, fromCol, toRow, toCol] = bestMove;
-            makeMove(fromRow, fromCol, toRow, toCol);
+            
+            // Выполняем ход AI напрямую
+            const piece = gameState.board[fromRow][fromCol];
+            gameState.board[toRow][toCol] = piece;
+            gameState.board[fromRow][fromCol] = '';
+            
+            // Обновить доску
+            createChessBoard();
+            
+            // Проверить окончание игры
+            if (checkGameOver()) {
+                showGameOver();
+                hideAILoading();
+                return;
+            }
         }
         
         gameState.currentPlayer = 'white';
         updateGameInfo();
         hideAILoading();
-        gameState.isProcessing = false; // Сбрасываем флаг обработки
-    }, 100); // Небольшая задержка для плавности
+    }, 200); // Увеличиваем задержку для стабильности
 }
 
 // Показать индикатор загрузки AI
