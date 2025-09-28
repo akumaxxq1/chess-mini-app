@@ -184,7 +184,7 @@ body {
 /* Шахматная доска */
 .chess-board {
     width: 100%;
-    max-width: 400px;
+    max-width: min(400px, 90vw, 90vh);
     aspect-ratio: 1;
     margin: 0 auto;
     display: grid;
@@ -318,7 +318,26 @@ body {
     }
     
     .chess-board {
-        max-width: 350px;
+        max-width: min(350px, 85vw, 85vh);
+    }
+    
+    .chess-square {
+        font-size: 1.5rem;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .game-info {
+        font-size: 0.9rem;
+        margin: 10px 0;
+    }
+    
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-height: 44px;
     }
     
     .chess-piece {

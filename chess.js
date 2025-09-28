@@ -22,7 +22,8 @@ let gameState = {
     selectedSquare: null,
     possibleMoves: [],
     gameOver: false,
-    winner: null
+    winner: null,
+    isProcessing: false // Флаг для предотвращения множественных кликов
 };
 
 // Инициализация приложения
@@ -174,9 +175,9 @@ function getPieceSymbol(piece) {
     return symbols[piece] || '';
 }
 
-// Обработка клика по клетке
+// Обработка клика по клетке - Оптимизированная версия
 function handleSquareClick(row, col) {
-    if (gameState.gameOver || gameState.currentPlayer !== 'white') {
+    if (gameState.gameOver || gameState.currentPlayer !== 'white' || gameState.isProcessing) {
         return;
     }
     
@@ -201,26 +202,40 @@ function handleSquareClick(row, col) {
     }
 }
 
-// Выбрать клетку
+// Выбрать клетку - Оптимизированная версия
 function selectSquare(row, col) {
+    // Предотвращаем множественные клики
+    if (gameState.isProcessing) return;
+    gameState.isProcessing = true;
+    
     clearSelection();
     
     gameState.selectedSquare = [row, col];
-    gameState.possibleMoves = getPossibleMoves(row, col);
     
-    // Визуальное выделение
-    const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
-    square.classList.add('selected');
-    
-    // Показать возможные ходы
-    gameState.possibleMoves.forEach(([moveRow, moveCol]) => {
-        const moveSquare = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
-        if (gameState.board[moveRow][moveCol]) {
-            moveSquare.classList.add('possible-capture');
-        } else {
-            moveSquare.classList.add('possible-move');
+    // Используем setTimeout для предотвращения блокировки UI
+    setTimeout(() => {
+        gameState.possibleMoves = getPossibleMoves(row, col);
+        
+        // Визуальное выделение
+        const square = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        if (square) {
+            square.classList.add('selected');
         }
-    });
+        
+        // Показать возможные ходы
+        gameState.possibleMoves.forEach(([moveRow, moveCol]) => {
+            const moveSquare = document.querySelector(`[data-row="${moveRow}"][data-col="${moveCol}"]`);
+            if (moveSquare) {
+                if (gameState.board[moveRow][moveCol]) {
+                    moveSquare.classList.add('possible-capture');
+                } else {
+                    moveSquare.classList.add('possible-move');
+                }
+            }
+        });
+        
+        gameState.isProcessing = false;
+    }, 10);
 }
 
 // Очистить выделение
@@ -412,8 +427,11 @@ function isValidSquare(row, col) {
     return row >= 0 && row < 8 && col >= 0 && col < 8;
 }
 
-// Сделать ход
+// Сделать ход - Оптимизированная версия
 function makeMove(fromRow, fromCol, toRow, toCol) {
+    if (gameState.isProcessing) return;
+    gameState.isProcessing = true;
+    
     const piece = gameState.board[fromRow][fromCol];
     gameState.board[toRow][toCol] = piece;
     gameState.board[fromRow][fromCol] = '';
@@ -424,6 +442,7 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
     // Проверить окончание игры
     if (checkGameOver()) {
         showGameOver();
+        gameState.isProcessing = false;
         return;
     }
     
@@ -433,22 +452,50 @@ function makeMove(fromRow, fromCol, toRow, toCol) {
     
     // Ход AI с задержкой
     setTimeout(() => {
-        makeAIMove();
-    }, 500);
+        if (!gameState.gameOver) {
+            makeAIMove();
+        }
+    }, 300); // Уменьшаем задержку
 }
 
-// Ход AI
+// Ход AI - Оптимизированная версия
 function makeAIMove() {
     if (gameState.gameOver) return;
     
-    const bestMove = getBestMove();
-    if (bestMove) {
-        const [fromRow, fromCol, toRow, toCol] = bestMove;
-        makeMove(fromRow, fromCol, toRow, toCol);
-    }
+    // Показываем индикатор загрузки
+    showAILoading();
     
-    gameState.currentPlayer = 'white';
-    updateGameInfo();
+    // Используем setTimeout для предотвращения блокировки UI
+    setTimeout(() => {
+        const bestMove = getBestMove();
+        if (bestMove) {
+            const [fromRow, fromCol, toRow, toCol] = bestMove;
+            makeMove(fromRow, fromCol, toRow, toCol);
+        }
+        
+        gameState.currentPlayer = 'white';
+        updateGameInfo();
+        hideAILoading();
+        gameState.isProcessing = false; // Сбрасываем флаг обработки
+    }, 100); // Небольшая задержка для плавности
+}
+
+// Показать индикатор загрузки AI
+function showAILoading() {
+    const statusElement = document.getElementById('game-status');
+    if (statusElement) {
+        statusElement.textContent = '🤖 AI думает...';
+        statusElement.style.color = '#ff6b6b';
+    }
+}
+
+// Скрыть индикатор загрузки AI
+function hideAILoading() {
+    const statusElement = document.getElementById('game-status');
+    if (statusElement) {
+        statusElement.textContent = 'Игра идет';
+        statusElement.style.color = '#4ecdc4';
+    }
 }
 
 // Получить лучший ход AI
@@ -467,17 +514,17 @@ function getBestMove() {
         case 4: // Средний - базовая оценка позиции
             return getBestMoveByEvaluation(moves, 1);
         case 5: // Нормальный
-            return getBestMoveByEvaluation(moves, 2);
+            return getBestMoveByEvaluation(moves, 1);
         case 6: // Сложный
-            return getBestMoveByEvaluation(moves, 3);
+            return getBestMoveByEvaluation(moves, 2);
         case 7: // Трудный
-            return getBestMoveByEvaluation(moves, 4);
+            return getBestMoveByEvaluation(moves, 2);
         case 8: // Эксперт
-            return getBestMoveByEvaluation(moves, 5);
+            return getBestMoveByEvaluation(moves, 3);
         case 9: // Мастер
-            return getBestMoveByEvaluation(moves, 6);
+            return getBestMoveByEvaluation(moves, 3);
         case 10: // Гроссмейстер
-            return getBestMoveByEvaluation(moves, 8);
+            return getBestMoveByEvaluation(moves, 4);
         default:
             return moves[Math.floor(Math.random() * moves.length)];
     }
