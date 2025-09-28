@@ -181,36 +181,39 @@ body {
     font-weight: 600;
 }
 
-/* Шахматная доска - КАРДИНАЛЬНО ИСПРАВЛЕННАЯ версия */
+/* Шахматная доска - СУПЕР СТАБИЛЬНАЯ версия */
 .chess-board {
     width: 400px !important; /* СТРОГО фиксированная ширина */
     height: 400px !important; /* СТРОГО фиксированная высота */
-    margin: 0 auto;
+    margin: 0 auto !important;
     display: grid !important;
     grid-template-columns: repeat(8, 50px) !important; /* СТРОГО 50px на клетку */
     grid-template-rows: repeat(8, 50px) !important; /* СТРОГО 50px на клетку */
-    border: 3px solid var(--tg-theme-text-color, #000000);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    position: relative;
+    border: 3px solid #000000 !important; /* Четкая граница */
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+    position: relative !important;
     flex-shrink: 0 !important; /* НЕ сжимается */
     box-sizing: border-box !important; /* Включаем границы в размер */
     min-width: 400px !important;
     min-height: 400px !important;
     max-width: 400px !important;
     max-height: 400px !important;
+    contain: layout !important; /* Изолируем layout */
+    transform: none !important; /* Убираем все трансформации */
+    will-change: auto !important; /* Отключаем GPU оптимизацию */
 }
 
 .chess-square {
     display: flex !important;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    cursor: pointer;
-    transition: background-color 0.1s ease; /* Только цвет фона */
-    position: relative;
-    user-select: none;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2rem !important;
+    cursor: pointer !important;
+    transition: background-color 0.1s ease !important; /* Только цвет фона */
+    position: relative !important;
+    user-select: none !important;
     width: 50px !important; /* СТРОГО 50px */
     height: 50px !important; /* СТРОГО 50px */
     box-sizing: border-box !important; /* Включаем границы */
@@ -219,6 +222,10 @@ body {
     max-width: 50px !important;
     max-height: 50px !important;
     flex-shrink: 0 !important; /* НЕ сжимается */
+    contain: layout !important; /* Изолируем layout */
+    transform: none !important; /* Убираем все трансформации */
+    will-change: auto !important; /* Отключаем GPU оптимизацию */
+    backface-visibility: visible !important; /* Убираем мерцание */
 }
 
 .chess-square.light {
@@ -466,57 +473,63 @@ body {
     flex-shrink: 0; /* Предотвращаем сжатие */
 }
 
-/* Разметка поля - СУПЕР ВИДИМАЯ версия */
+/* Разметка поля - МАКСИМАЛЬНО ВИДИМАЯ версия */
 .chess-coordinates {
     position: absolute !important;
-    font-size: 18px !important; /* ЕЩЕ больше размер */
+    font-size: 20px !important; /* МАКСИМАЛЬНЫЙ размер */
     font-weight: 900 !important; /* МАКСИМАЛЬНО жирный */
     color: #000000 !important;
-    user-select: none;
-    pointer-events: none;
-    z-index: 1000 !important; /* МАКСИМАЛЬНЫЙ z-index */
+    user-select: none !important;
+    pointer-events: none !important;
+    z-index: 9999 !important; /* МАКСИМАЛЬНЫЙ z-index */
     background: #ffffff !important; /* ЧИСТО белый фон */
-    padding: 6px 8px !important; /* ЕЩЕ больше padding */
-    border-radius: 6px !important;
-    border: 2px solid #000000 !important; /* ТОЛСТАЯ граница */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important; /* СИЛЬНАЯ тень */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important; /* Тень текста */
+    padding: 8px 10px !important; /* МАКСИМАЛЬНЫЙ padding */
+    border-radius: 8px !important;
+    border: 3px solid #000000 !important; /* ОЧЕНЬ ТОЛСТАЯ граница */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7) !important; /* МАКСИМАЛЬНАЯ тень */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5) !important; /* СИЛЬНАЯ тень текста */
+    font-family: Arial, sans-serif !important; /* Четкий шрифт */
 }
 
 .chess-coordinates.letters {
-    bottom: -35px !important; /* ЕЩЕ больше отступ */
+    bottom: -40px !important; /* МАКСИМАЛЬНЫЙ отступ */
     left: 0 !important;
     right: 0 !important;
     display: flex !important;
     justify-content: space-between !important;
-    padding: 0 12px !important; /* ЕЩЕ больше padding */
+    padding: 0 15px !important; /* МАКСИМАЛЬНЫЙ padding */
+    height: 30px !important; /* Фиксированная высота */
 }
 
 .chess-coordinates.numbers {
     top: 0 !important;
     bottom: 0 !important;
-    left: -35px !important; /* ЕЩЕ больше отступ */
+    left: -40px !important; /* МАКСИМАЛЬНЫЙ отступ */
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 12px 0 !important; /* ЕЩЕ больше padding */
+    padding: 15px 0 !important; /* МАКСИМАЛЬНЫЙ padding */
+    width: 30px !important; /* Фиксированная ширина */
 }
 
 .chess-board-container {
     position: relative !important;
     display: inline-block !important;
-    margin: 40px !important; /* ЕЩЕ больше отступ для координат */
-    padding: 15px !important; /* ЕЩЕ больше padding */
+    margin: 50px !important; /* МАКСИМАЛЬНЫЙ отступ для координат */
+    padding: 20px !important; /* МАКСИМАЛЬНЫЙ padding */
 }
 
-/* ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ - убираем ВСЕ искажения */
+/* СУПЕР ИСПРАВЛЕНИЯ - убираем ВСЕ искажения */
 * {
-    box-sizing: border-box; /* Включаем границы в размер всех элементов */
+    box-sizing: border-box !important; /* Включаем границы в размер всех элементов */
 }
 
 .chess-board {
-    min-width: 400px; /* Минимальная ширина */
-    min-height: 400px; /* Минимальная высота */
+    min-width: 400px !important; /* Минимальная ширина */
+    min-height: 400px !important; /* Минимальная высота */
+    contain: layout !important; /* Изолируем layout */
+    transform: none !important; /* Убираем все трансформации */
+    will-change: auto !important; /* Отключаем GPU оптимизацию */
 }
 
 /* КАРДИНАЛЬНО убираем ВСЕ поломанности */
@@ -525,6 +538,7 @@ body {
     transform: none !important; /* Убираем все трансформации */
     backface-visibility: visible !important; /* Убираем мерцание */
     transition: background-color 0.1s ease !important; /* Только цвет фона */
+    contain: layout !important; /* Изолируем layout */
 }
 
 .chess-piece {
@@ -532,28 +546,29 @@ body {
     transform: none !important;
     backface-visibility: visible !important;
     transition: none !important; /* Убираем все переходы */
+    contain: layout !important; /* Изолируем layout */
 }
 
 /* Плавные переходы БЕЗ поломанностей */
 .chess-square.selected {
     transition: background-color 0.1s ease !important;
+    contain: layout !important;
 }
 
 .chess-square.possible-move {
     transition: background-color 0.1s ease !important;
+    contain: layout !important;
 }
 
 .chess-square.possible-capture {
     transition: background-color 0.1s ease !important;
+    contain: layout !important;
 }
 
 /* ДОПОЛНИТЕЛЬНЫЕ исправления */
 .chess-board * {
     box-sizing: border-box !important;
-}
-
-.chess-board {
-    contain: layout !important; /* Изолируем layout */
+    contain: layout !important;
 }
 
 /* Для очень маленьких экранов */

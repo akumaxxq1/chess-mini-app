@@ -211,14 +211,34 @@ function createChessBoard() {
     board.appendChild(boardContainer);
 }
 
-// Добавление координат на доску
+// Добавление координат на доску - ИСПРАВЛЕННАЯ версия
 function addBoardCoordinates(boardGrid) {
     // Буквы (a-h) снизу
     const letters = document.createElement('div');
     letters.className = 'chess-coordinates letters';
+    letters.style.position = 'absolute';
+    letters.style.bottom = '-40px';
+    letters.style.left = '0';
+    letters.style.right = '0';
+    letters.style.display = 'flex';
+    letters.style.justifyContent = 'space-between';
+    letters.style.padding = '0 15px';
+    letters.style.height = '30px';
+    letters.style.zIndex = '9999';
+    letters.style.fontSize = '20px';
+    letters.style.fontWeight = '900';
+    letters.style.color = '#000000';
+    letters.style.background = '#ffffff';
+    letters.style.border = '3px solid #000000';
+    letters.style.borderRadius = '8px';
+    letters.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.7)';
+    letters.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+    letters.style.fontFamily = 'Arial, sans-serif';
+    
     for (let i = 0; i < 8; i++) {
         const letter = document.createElement('span');
         letter.textContent = String.fromCharCode(97 + i); // a-h
+        letter.style.padding = '4px 6px';
         letters.appendChild(letter);
     }
     boardGrid.appendChild(letters);
@@ -226,9 +246,30 @@ function addBoardCoordinates(boardGrid) {
     // Цифры (1-8) слева
     const numbers = document.createElement('div');
     numbers.className = 'chess-coordinates numbers';
+    numbers.style.position = 'absolute';
+    numbers.style.top = '0';
+    numbers.style.bottom = '0';
+    numbers.style.left = '-40px';
+    numbers.style.display = 'flex';
+    numbers.style.flexDirection = 'column';
+    numbers.style.justifyContent = 'space-between';
+    numbers.style.padding = '15px 0';
+    numbers.style.width = '30px';
+    numbers.style.zIndex = '9999';
+    numbers.style.fontSize = '20px';
+    numbers.style.fontWeight = '900';
+    numbers.style.color = '#000000';
+    numbers.style.background = '#ffffff';
+    numbers.style.border = '3px solid #000000';
+    numbers.style.borderRadius = '8px';
+    numbers.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.7)';
+    numbers.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+    numbers.style.fontFamily = 'Arial, sans-serif';
+    
     for (let i = 8; i >= 1; i--) {
         const number = document.createElement('span');
         number.textContent = i.toString();
+        number.style.padding = '4px 6px';
         numbers.appendChild(number);
     }
     boardGrid.appendChild(numbers);
