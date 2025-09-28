@@ -155,15 +155,17 @@ function createChessBoard() {
                 pieceElement.className = 'chess-piece';
                 pieceElement.textContent = getPieceSymbol(piece);
                 
-                // Четкие цвета для фигур
+                // МАКСИМАЛЬНЫЙ контраст для фигур
                 if (piece === piece.toUpperCase()) {
-                    // Белые фигуры - ярко белые
+                    // Белые фигуры - ЧИСТО БЕЛЫЕ с черной обводкой
                     pieceElement.style.color = '#ffffff';
-                    pieceElement.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.8)';
+                    pieceElement.style.textShadow = '2px 2px 0 #000000, -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000, 2px 0 0 #000000, -2px 0 0 #000000';
+                    pieceElement.style.fontWeight = '900';
                 } else {
-                    // Черные фигуры - темно черные
+                    // Черные фигуры - ЧИСТО ЧЕРНЫЕ с белой обводкой
                     pieceElement.style.color = '#000000';
-                    pieceElement.style.textShadow = '2px 2px 4px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.8)';
+                    pieceElement.style.textShadow = '2px 2px 0 #ffffff, -2px -2px 0 #ffffff, 2px -2px 0 #ffffff, -2px 2px 0 #ffffff, 0 2px 0 #ffffff, 0 -2px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff';
+                    pieceElement.style.fontWeight = '900';
                 }
                 
                 square.appendChild(pieceElement);
