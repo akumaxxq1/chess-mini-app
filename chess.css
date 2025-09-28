@@ -181,7 +181,7 @@ body {
     font-weight: 600;
 }
 
-/* Шахматная доска - УЛЬТИМАТИВНО СТАБИЛЬНАЯ версия */
+/* Шахматная доска - СУПЕР СТАБИЛЬНАЯ версия */
 .chess-board {
     width: 400px !important; /* СТРОГО фиксированная ширина */
     height: 400px !important; /* СТРОГО фиксированная высота */
@@ -206,6 +206,11 @@ body {
     backface-visibility: visible !important; /* Убираем мерцание */
     perspective: none !important; /* Убираем 3D эффекты */
     transform-style: flat !important; /* Плоский стиль */
+    isolation: isolate !important; /* Изолируем от других элементов */
+    filter: none !important; /* Убираем все фильтры */
+    opacity: 1 !important; /* Полная непрозрачность */
+    visibility: visible !important; /* Видимость */
+    pointer-events: auto !important; /* Взаимодействие */
 }
 
 .chess-square {
@@ -232,14 +237,24 @@ body {
     perspective: none !important; /* Убираем 3D эффекты */
     transform-style: flat !important; /* Плоский стиль */
     isolation: isolate !important; /* Изолируем от других элементов */
+    filter: none !important; /* Убираем все фильтры */
+    opacity: 1 !important; /* Полная непрозрачность */
+    visibility: visible !important; /* Видимость */
+    pointer-events: auto !important; /* Взаимодействие */
+    margin: 0 !important; /* Убираем отступы */
+    padding: 0 !important; /* Убираем внутренние отступы */
+    border: none !important; /* Убираем границы */
+    outline: none !important; /* Убираем контуры */
 }
 
 .chess-square.light {
-    background: #f0d9b5;
+    background: #f0d9b5 !important;
+    background-color: #f0d9b5 !important;
 }
 
 .chess-square.dark {
-    background: #b58863;
+    background: #b58863 !important;
+    background-color: #b58863 !important;
 }
 
 .chess-square:hover {
