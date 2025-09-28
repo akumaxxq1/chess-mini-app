@@ -466,43 +466,46 @@ body {
     flex-shrink: 0; /* Предотвращаем сжатие */
 }
 
-/* Разметка поля - ИСПРАВЛЕННАЯ версия */
+/* Разметка поля - КАРДИНАЛЬНО ИСПРАВЛЕННАЯ версия */
 .chess-coordinates {
     position: absolute !important;
-    font-size: 14px !important;
+    font-size: 16px !important; /* Увеличиваем размер */
     font-weight: bold !important;
     color: #000000 !important;
     user-select: none;
     pointer-events: none;
-    z-index: 10 !important;
-    background: rgba(255, 255, 255, 0.8) !important;
-    padding: 2px 4px !important;
-    border-radius: 3px !important;
+    z-index: 100 !important; /* Увеличиваем z-index */
+    background: rgba(255, 255, 255, 0.9) !important; /* Более яркий фон */
+    padding: 4px 6px !important; /* Увеличиваем padding */
+    border-radius: 4px !important;
+    border: 1px solid #000000 !important; /* Добавляем границу */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important; /* Добавляем тень */
 }
 
 .chess-coordinates.letters {
-    bottom: -25px !important;
+    bottom: -30px !important; /* Увеличиваем отступ */
     left: 0 !important;
     right: 0 !important;
     display: flex !important;
     justify-content: space-between !important;
-    padding: 0 6px !important;
+    padding: 0 8px !important; /* Увеличиваем padding */
 }
 
 .chess-coordinates.numbers {
     top: 0 !important;
     bottom: 0 !important;
-    left: -25px !important;
+    left: -30px !important; /* Увеличиваем отступ */
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 6px 0 !important;
+    padding: 8px 0 !important; /* Увеличиваем padding */
 }
 
 .chess-board-container {
     position: relative !important;
     display: inline-block !important;
-    margin: 25px !important; /* Отступ для координат */
+    margin: 30px !important; /* Увеличиваем отступ для координат */
+    padding: 10px !important; /* Добавляем padding */
 }
 
 /* ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ - убираем ВСЕ искажения */

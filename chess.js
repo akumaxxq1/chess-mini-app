@@ -555,12 +555,12 @@ function hideAILoading() {
     }
 }
 
-// Получить лучший ход AI - УЛУЧШЕННАЯ версия
+// Получить лучший ход AI - КАРДИНАЛЬНО УМНАЯ версия
 function getBestMove() {
     const moves = getAllPossibleMoves('black');
     if (moves.length === 0) return null;
     
-    // Умный алгоритм в зависимости от сложности
+    // КАРДИНАЛЬНО умный алгоритм в зависимости от сложности
     switch (currentDifficulty) {
         case 1: // Новичок - случайный ход
             return moves[Math.floor(Math.random() * moves.length)];
@@ -569,19 +569,19 @@ function getBestMove() {
         case 3: // Простой - предпочитает взятие
             return getCaptureMove(moves) || getRandomSafeMove(moves);
         case 4: // Средний - базовая стратегия
-            return getStrategicMove(moves, 1);
+            return getSuperStrategicMove(moves, 1);
         case 5: // Нормальный - улучшенная стратегия
-            return getStrategicMove(moves, 2);
+            return getSuperStrategicMove(moves, 2);
         case 6: // Сложный - продвинутая стратегия
-            return getStrategicMove(moves, 3);
+            return getSuperStrategicMove(moves, 3);
         case 7: // Трудный - экспертная стратегия
-            return getStrategicMove(moves, 4);
+            return getSuperStrategicMove(moves, 4);
         case 8: // Эксперт - мастерская стратегия
-            return getStrategicMove(moves, 5);
+            return getSuperStrategicMove(moves, 5);
         case 9: // Мастер - гроссмейстерская стратегия
-            return getStrategicMove(moves, 6);
+            return getSuperStrategicMove(moves, 6);
         case 10: // Гроссмейстер - максимальная стратегия
-            return getStrategicMove(moves, 7);
+            return getSuperStrategicMove(moves, 7);
         default:
             return moves[Math.floor(Math.random() * moves.length)];
     }
@@ -665,6 +665,209 @@ function getStrategicMove(moves, depth) {
     // Возвращаем лучший ход или случайный из топ-2 (уменьшаем случайность)
     const topMoves = priorities.slice(0, Math.min(2, priorities.length));
     return topMoves[Math.floor(Math.random() * topMoves.length)].move;
+}
+
+// СУПЕР умная стратегическая функция - КАРДИНАЛЬНО улучшенная
+function getSuperStrategicMove(moves, depth) {
+    if (moves.length === 0) return null;
+    
+    // Приоритеты ходов с МАКСИМАЛЬНЫМ интеллектом
+    const priorities = [];
+    
+    for (const move of moves) {
+        let score = 0;
+        const [fromRow, fromCol, toRow, toCol] = move;
+        const piece = gameState.board[fromRow][fromCol];
+        const targetPiece = gameState.board[toRow][toCol];
+        
+        // 1. Взятие фигур (МАКСИМАЛЬНЫЙ приоритет)
+        if (targetPiece) {
+            score += getPieceValue(targetPiece) * 500; // УВЕЛИЧИВАЕМ в 2.5 раза
+        }
+        
+        // 2. Центральные поля (КРИТИЧНО)
+        if ((toRow >= 3 && toRow <= 4) && (toCol >= 3 && toCol <= 4)) {
+            score += 100; // УВЕЛИЧИВАЕМ в 2 раза
+        }
+        
+        // 3. Развитие фигур (УМНЕЕ)
+        if (piece === 'N' && toRow >= 2) { // Конь вперед
+            score += 50;
+        }
+        if (piece === 'B' && toRow >= 2) { // Слон вперед
+            score += 45;
+        }
+        if (piece === 'Q' && toRow >= 2) { // Ферзь вперед
+            score += 40;
+        }
+        if (piece === 'R' && toRow >= 2) { // Ладья вперед
+            score += 35;
+        }
+        
+        // 4. Рокировка (КРИТИЧНО)
+        if (piece === 'K' && Math.abs(toCol - fromCol) === 2) {
+            score += 200; // УВЕЛИЧИВАЕМ в 2 раза
+        }
+        
+        // 5. Атака на короля (МАКСИМАЛЬНО)
+        if (targetPiece === 'K') {
+            score += 50000; // УВЕЛИЧИВАЕМ в 5 раз
+        }
+        
+        // 6. Защита своих фигур (КРИТИЧНО)
+        if (isPieceUnderAttack(toRow, toCol, 'black')) {
+            score += 200; // УВЕЛИЧИВАЕМ в 2 раза
+        }
+        
+        // 7. Атака на ферзя (КРИТИЧНО)
+        if (targetPiece === 'Q') {
+            score += 5000; // УВЕЛИЧИВАЕМ в 2.5 раза
+        }
+        
+        // 8. Атака на ладью (ВАЖНО)
+        if (targetPiece === 'R') {
+            score += 2500; // УВЕЛИЧИВАЕМ в 2.5 раза
+        }
+        
+        // 9. Атака на слона/коня (ВАЖНО)
+        if (targetPiece === 'B' || targetPiece === 'N') {
+            score += 1250; // УВЕЛИЧИВАЕМ в 2.5 раза
+        }
+        
+        // 10. Спасение своих фигур (КРИТИЧНО)
+        if (isPieceUnderAttack(fromRow, fromCol, 'black')) {
+            score += 300; // УВЕЛИЧИВАЕМ в 2 раза
+        }
+        
+        // 11. НОВОЕ: Контроль центра
+        if ((toRow >= 2 && toRow <= 5) && (toCol >= 2 && toCol <= 5)) {
+            score += 25;
+        }
+        
+        // 12. НОВОЕ: Атака на пешки
+        if (targetPiece === 'P') {
+            score += 100;
+        }
+        
+        // 13. НОВОЕ: Избегаем ходов в угол
+        if ((toRow === 0 || toRow === 7) && (toCol === 0 || toCol === 7)) {
+            score -= 50;
+        }
+        
+        // 14. НОВОЕ: Предпочитаем ходы вперед
+        if (toRow > fromRow) {
+            score += 20;
+        }
+        
+        priorities.push({ move, score });
+    }
+    
+    // Сортируем по приоритету
+    priorities.sort((a, b) => b.score - a.score);
+    
+    // Возвращаем ТОЛЬКО лучший ход (убираем случайность)
+    return priorities[0].move;
+}
+
+// СУПЕР умная функция для подсказок белых
+function getSuperBestMoveForWhite(moves) {
+    if (moves.length === 0) return null;
+    
+    const priorities = [];
+    
+    for (const move of moves) {
+        let score = 0;
+        const [fromRow, fromCol, toRow, toCol] = move;
+        const piece = gameState.board[fromRow][fromCol];
+        const targetPiece = gameState.board[toRow][toCol];
+        
+        // 1. Взятие фигур (МАКСИМАЛЬНЫЙ приоритет)
+        if (targetPiece) {
+            score += getPieceValue(targetPiece) * 500;
+        }
+        
+        // 2. Центральные поля (КРИТИЧНО)
+        if ((toRow >= 3 && toRow <= 4) && (toCol >= 3 && toCol <= 4)) {
+            score += 100;
+        }
+        
+        // 3. Развитие фигур (УМНЕЕ)
+        if (piece === 'N' && toRow <= 5) { // Конь вперед
+            score += 50;
+        }
+        if (piece === 'B' && toRow <= 5) { // Слон вперед
+            score += 45;
+        }
+        if (piece === 'Q' && toRow <= 5) { // Ферзь вперед
+            score += 40;
+        }
+        if (piece === 'R' && toRow <= 5) { // Ладья вперед
+            score += 35;
+        }
+        
+        // 4. Рокировка (КРИТИЧНО)
+        if (piece === 'K' && Math.abs(toCol - fromCol) === 2) {
+            score += 200;
+        }
+        
+        // 5. Атака на короля (МАКСИМАЛЬНО)
+        if (targetPiece === 'k') {
+            score += 50000;
+        }
+        
+        // 6. Защита своих фигур (КРИТИЧНО)
+        if (isPieceUnderAttack(toRow, toCol, 'white')) {
+            score += 200;
+        }
+        
+        // 7. Атака на ферзя (КРИТИЧНО)
+        if (targetPiece === 'q') {
+            score += 5000;
+        }
+        
+        // 8. Атака на ладью (ВАЖНО)
+        if (targetPiece === 'r') {
+            score += 2500;
+        }
+        
+        // 9. Атака на слона/коня (ВАЖНО)
+        if (targetPiece === 'b' || targetPiece === 'n') {
+            score += 1250;
+        }
+        
+        // 10. Спасение своих фигур (КРИТИЧНО)
+        if (isPieceUnderAttack(fromRow, fromCol, 'white')) {
+            score += 300;
+        }
+        
+        // 11. Контроль центра
+        if ((toRow >= 2 && toRow <= 5) && (toCol >= 2 && toCol <= 5)) {
+            score += 25;
+        }
+        
+        // 12. Атака на пешки
+        if (targetPiece === 'p') {
+            score += 100;
+        }
+        
+        // 13. Избегаем ходов в угол
+        if ((toRow === 0 || toRow === 7) && (toCol === 0 || toCol === 7)) {
+            score -= 50;
+        }
+        
+        // 14. Предпочитаем ходы вперед
+        if (toRow < fromRow) {
+            score += 20;
+        }
+        
+        priorities.push({ move, score });
+    }
+    
+    // Сортируем по приоритету
+    priorities.sort((a, b) => b.score - a.score);
+    
+    // Возвращаем ТОЛЬКО лучший ход
+    return priorities[0].move;
 }
 
 // Получить ценность фигуры
@@ -901,7 +1104,7 @@ function updateGameInfo() {
     }
 }
 
-// Показать УМНУЮ подсказку
+// Показать СУПЕР УМНУЮ подсказку
 function showHint() {
     if (gameState.currentPlayer !== 'white' || gameState.gameOver) {
         return;
@@ -909,8 +1112,8 @@ function showHint() {
     
     const moves = getAllPossibleMoves('white');
     if (moves.length > 0) {
-        // Находим лучший ход для белых
-        const bestMove = getBestMoveForWhite(moves);
+        // Находим СУПЕР лучший ход для белых
+        const bestMove = getSuperBestMoveForWhite(moves);
         const [fromRow, fromCol, toRow, toCol] = bestMove;
         
         // Подсветить рекомендуемый ход
@@ -918,19 +1121,23 @@ function showHint() {
         const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
         
         if (fromSquare && toSquare) {
-            fromSquare.style.background = 'rgba(255, 193, 7, 0.7)';
-            toSquare.style.background = 'rgba(255, 193, 7, 0.7)';
+            fromSquare.style.background = 'rgba(255, 193, 7, 0.8)';
+            toSquare.style.background = 'rgba(255, 193, 7, 0.8)';
             
-            // Добавляем анимацию
-            fromSquare.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.8)';
-            toSquare.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.8)';
+            // Добавляем СУПЕР анимацию
+            fromSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
+            toSquare.style.boxShadow = '0 0 15px rgba(255, 193, 7, 1)';
+            fromSquare.style.border = '2px solid #ffc107';
+            toSquare.style.border = '2px solid #ffc107';
             
             setTimeout(() => {
                 fromSquare.style.background = '';
                 toSquare.style.background = '';
                 fromSquare.style.boxShadow = '';
                 toSquare.style.boxShadow = '';
-            }, 3000);
+                fromSquare.style.border = '';
+                toSquare.style.border = '';
+            }, 4000); // Увеличиваем время показа
         }
     }
 }
