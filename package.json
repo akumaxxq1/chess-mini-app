@@ -1,0 +1,24 @@
+{
+  "name": "chess-mini-app",
+  "version": "1.0.0",
+  "description": "Шахматы в Telegram через Mini App",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "deploy": "git add . && git commit -m 'Update chess app' && git push"
+  },
+  "keywords": [
+    "chess",
+    "telegram",
+    "mini-app",
+    "game",
+    "ai"
+  ],
+  "author": "AI Assistant",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/chess-mini-app.git"
+  },
+  "homepage": "https://YOUR_USERNAME.github.io/chess-mini-app"
+}

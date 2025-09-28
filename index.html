@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♟️ Шахматы в Telegram</title>
+    <link rel="stylesheet" href="chess.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Главное меню -->
+        <div id="mainMenu" class="menu-screen">
+            <div class="logo">
+                <h1>♟️ Шахматы</h1>
+                <p>Играй против AI</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button id="playButton" class="btn btn-primary">
+                    🎮 Играть
+                </button>
+                <button id="rulesButton" class="btn btn-secondary">
+                    📖 Правила
+                </button>
+            </div>
+        </div>
+
+        <!-- Выбор сложности -->
+        <div id="difficultyMenu" class="menu-screen hidden">
+            <div class="back-button">
+                <button id="backButton" class="btn btn-back">← Назад</button>
+            </div>
+            
+            <h2>Выберите уровень сложности</h2>
+            <div class="difficulty-grid">
+                <button class="difficulty-btn" data-level="1">
+                    <span class="level">1</span>
+                    <span class="name">Новичок</span>
+                </button>
+                <button class="difficulty-btn" data-level="2">
+                    <span class="level">2</span>
+                    <span class="name">Легкий</span>
+                </button>
+                <button class="difficulty-btn" data-level="3">
+                    <span class="level">3</span>
+                    <span class="name">Простой</span>
+                </button>
+                <button class="difficulty-btn" data-level="4">
+                    <span class="level">4</span>
+                    <span class="name">Средний</span>
+                </button>
+                <button class="difficulty-btn" data-level="5">
+                    <span class="level">5</span>
+                    <span class="name">Нормальный</span>
+                </button>
+                <button class="difficulty-btn" data-level="6">
+                    <span class="level">6</span>
+                    <span class="name">Сложный</span>
+                </button>
+                <button class="difficulty-btn" data-level="7">
+                    <span class="level">7</span>
+                    <span class="name">Трудный</span>
+                </button>
+                <button class="difficulty-btn" data-level="8">
+                    <span class="level">8</span>
+                    <span class="name">Эксперт</span>
+                </button>
+                <button class="difficulty-btn" data-level="9">
+                    <span class="level">9</span>
+                    <span class="name">Мастер</span>
+                </button>
+                <button class="difficulty-btn" data-level="10">
+                    <span class="level">10</span>
+                    <span class="name">Гроссмейстер</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Игровой экран -->
+        <div id="gameScreen" class="game-screen hidden">
+            <div class="game-header">
+                <button id="menuButton" class="btn btn-back">← Меню</button>
+                <div class="game-info">
+                    <span id="currentPlayer">Ваш ход</span>
+                    <span id="difficultyLevel">Уровень: 1</span>
+                </div>
+            </div>
+            
+            <div class="chess-board" id="chessBoard">
+                <!-- Шахматная доска будет создана через JavaScript -->
+            </div>
+            
+            <div class="game-controls">
+                <button id="newGameButton" class="btn btn-secondary">🔄 Новая игра</button>
+                <button id="hintButton" class="btn btn-secondary">💡 Подсказка</button>
+            </div>
+        </div>
+
+        <!-- Экран правил -->
+        <div id="rulesScreen" class="menu-screen hidden">
+            <div class="back-button">
+                <button id="rulesBackButton" class="btn btn-back">← Назад</button>
+            </div>
+            
+            <h2>📖 Правила шахмат</h2>
+            <div class="rules-content">
+                <h3>Цель игры:</h3>
+                <p>Поставить мат королю противника</p>
+                
+                <h3>Как ходят фигуры:</h3>
+                <ul>
+                    <li>♟️ Пешка: на 1 клетку вперед, бьет по диагонали</li>
+                    <li>♜ Ладья: по горизонтали и вертикали</li>
+                    <li>♞ Конь: буквой "Г"</li>
+                    <li>♝ Слон: по диагонали</li>
+                    <li>♛ Ферзь: во всех направлениях</li>
+                    <li>♚ Король: на 1 клетку в любую сторону</li>
+                </ul>
+                
+                <h3>Особые правила:</h3>
+                <ul>
+                    <li>Рокировка: король + ладья</li>
+                    <li>Взятие на проходе</li>
+                    <li>Превращение пешки в ферзя</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Экран окончания игры -->
+        <div id="gameOverScreen" class="menu-screen hidden">
+            <div class="game-over-content">
+                <h2 id="gameResult">🎉 Победа!</h2>
+                <p id="gameResultText">Вы выиграли!</p>
+                
+                <div class="game-over-buttons">
+                    <button id="playAgainButton" class="btn btn-primary">🔄 Играть снова</button>
+                    <button id="changeDifficultyButton" class="btn btn-secondary">⚙️ Изменить сложность</button>
+                    <button id="mainMenuButton" class="btn btn-secondary">🏠 Главное меню</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="chess.js"></script>
+</body>
+</html>

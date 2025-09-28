@@ -1,0 +1,407 @@
+/* Общие стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #000000);
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Утилиты */
+.hidden {
+    display: none !important;
+}
+
+/* Кнопки */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+}
+
+.btn-primary {
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.btn-primary:hover {
+    background: var(--tg-theme-button-color, #1a6bb3);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+    color: var(--tg-theme-text-color, #000000);
+}
+
+.btn-secondary:hover {
+    background: var(--tg-theme-secondary-bg-color, #e0e0e0);
+    transform: translateY(-2px);
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--tg-theme-text-color, #000000);
+    border: 2px solid var(--tg-theme-hint-color, #999999);
+}
+
+.btn-back:hover {
+    background: var(--tg-theme-hint-color, #999999);
+    color: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* Главное меню */
+.menu-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    gap: 30px;
+}
+
+.logo h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #2481cc, #6c5ce7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo p {
+    font-size: 1.2rem;
+    color: var(--tg-theme-hint-color, #999999);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Выбор сложности */
+.back-button {
+    align-self: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.difficulty-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+}
+
+.difficulty-btn {
+    background: var(--tg-theme-secondary-bg-color, #f8f9fa);
+    border: 2px solid var(--tg-theme-hint-color, #e9ecef);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 80px;
+}
+
+.difficulty-btn:hover {
+    border-color: var(--tg-theme-button-color, #2481cc);
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    transform: translateY(-2px);
+}
+
+.difficulty-btn .level {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.difficulty-btn .name {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Игровой экран */
+.game-screen {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.game-info span {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Шахматная доска */
+.chess-board {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 3px solid var(--tg-theme-text-color, #000000);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.chess-square {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    user-select: none;
+}
+
+.chess-square.light {
+    background: #f0d9b5;
+}
+
+.chess-square.dark {
+    background: #b58863;
+}
+
+.chess-square:hover {
+    background: rgba(36, 129, 204, 0.3) !important;
+}
+
+.chess-square.selected {
+    background: var(--tg-theme-button-color, #2481cc) !important;
+    color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.chess-square.possible-move {
+    background: rgba(76, 175, 80, 0.5) !important;
+}
+
+.chess-square.possible-move::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(76, 175, 80, 0.8);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.chess-square.possible-capture {
+    background: rgba(244, 67, 54, 0.5) !important;
+}
+
+.chess-square.possible-capture::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(244, 67, 54, 0.8);
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.chess-piece {
+    font-size: 2.5rem;
+    z-index: 2;
+    position: relative;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Игровые контролы */
+.game-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Правила */
+.rules-content {
+    text-align: left;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.rules-content h3 {
+    margin: 20px 0 10px 0;
+    color: var(--tg-theme-button-color, #2481cc);
+}
+
+.rules-content ul {
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+.rules-content li {
+    margin-bottom: 5px;
+}
+
+/* Экран окончания игры */
+.game-over-content {
+    text-align: center;
+    max-width: 400px;
+}
+
+.game-over-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.game-over-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 30px;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .logo h1 {
+        font-size: 2.5rem;
+    }
+    
+    .chess-board {
+        max-width: 350px;
+    }
+    
+    .chess-piece {
+        font-size: 2rem;
+    }
+    
+    .difficulty-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-screen:not(.hidden) {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Специальные эффекты для фигур */
+.chess-piece.moving {
+    animation: movePiece 0.3s ease;
+}
+
+@keyframes movePiece {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Индикатор хода */
+.current-player-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Загрузка */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+}
+
+.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--tg-theme-hint-color, #999999);
+    border-top: 2px solid var(--tg-theme-button-color, #2481cc);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
