@@ -129,9 +129,15 @@ function initializeBoard() {
     ];
 }
 
-// Создание шахматной доски с разметкой
+// Создание шахматной доски с разметкой - ИСПРАВЛЕННАЯ версия
 function createChessBoard() {
     const board = document.getElementById('chessBoard');
+    if (!board) {
+        console.error('Элемент chessBoard не найден!');
+        return;
+    }
+    
+    // Очищаем доску
     board.innerHTML = '';
     
     // Создаем контейнер для доски с разметкой
@@ -581,7 +587,7 @@ function getBestMove() {
     }
 }
 
-// Умная стратегическая функция
+// УМНАЯ стратегическая функция - КАРДИНАЛЬНО улучшенная
 function getStrategicMove(moves, depth) {
     if (moves.length === 0) return null;
     
@@ -596,35 +602,58 @@ function getStrategicMove(moves, depth) {
         
         // 1. Взятие фигур (высший приоритет)
         if (targetPiece) {
-            score += getPieceValue(targetPiece) * 100;
+            score += getPieceValue(targetPiece) * 200; // Увеличиваем приоритет
         }
         
-        // 2. Центральные поля
+        // 2. Центральные поля (важнее)
         if ((toRow >= 3 && toRow <= 4) && (toCol >= 3 && toCol <= 4)) {
+            score += 50; // Увеличиваем приоритет
+        }
+        
+        // 3. Развитие фигур (умнее)
+        if (piece === 'N' && toRow >= 2) { // Конь вперед
+            score += 30;
+        }
+        if (piece === 'B' && toRow >= 2) { // Слон вперед
+            score += 25;
+        }
+        if (piece === 'Q' && toRow >= 2) { // Ферзь вперед
             score += 20;
         }
         
-        // 3. Развитие фигур
-        if (piece === 'N' && toRow >= 2) { // Конь вперед
-            score += 15;
-        }
-        if (piece === 'B' && toRow >= 2) { // Слон вперед
-            score += 10;
-        }
-        
-        // 4. Рокировка
+        // 4. Рокировка (важнее)
         if (piece === 'K' && Math.abs(toCol - fromCol) === 2) {
-            score += 30;
+            score += 100; // Увеличиваем приоритет
         }
         
-        // 5. Атака на короля
+        // 5. Атака на короля (критично)
         if (targetPiece === 'K') {
+            score += 10000; // Максимальный приоритет
+        }
+        
+        // 6. Защита своих фигур (важнее)
+        if (isPieceUnderAttack(toRow, toCol, 'black')) {
+            score += 100; // Увеличиваем приоритет
+        }
+        
+        // 7. НОВОЕ: Атака на ферзя
+        if (targetPiece === 'Q') {
+            score += 2000;
+        }
+        
+        // 8. НОВОЕ: Атака на ладью
+        if (targetPiece === 'R') {
             score += 1000;
         }
         
-        // 6. Защита своих фигур
-        if (isPieceUnderAttack(toRow, toCol, 'black')) {
-            score += 50;
+        // 9. НОВОЕ: Атака на слона/коня
+        if (targetPiece === 'B' || targetPiece === 'N') {
+            score += 500;
+        }
+        
+        // 10. НОВОЕ: Избегаем потери фигур
+        if (isPieceUnderAttack(fromRow, fromCol, 'black')) {
+            score += 150; // Спасаем фигуру
         }
         
         priorities.push({ move, score });
@@ -633,8 +662,8 @@ function getStrategicMove(moves, depth) {
     // Сортируем по приоритету
     priorities.sort((a, b) => b.score - a.score);
     
-    // Возвращаем лучший ход или случайный из топ-3
-    const topMoves = priorities.slice(0, Math.min(3, priorities.length));
+    // Возвращаем лучший ход или случайный из топ-2 (уменьшаем случайность)
+    const topMoves = priorities.slice(0, Math.min(2, priorities.length));
     return topMoves[Math.floor(Math.random() * topMoves.length)].move;
 }
 
