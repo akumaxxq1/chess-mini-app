@@ -148,12 +148,24 @@ function createChessBoard() {
                 square.classList.add('dark');
             }
             
-            // Добавление фигуры
+            // Добавление фигуры с четкими цветами
             const piece = gameState.board[row][col];
             if (piece) {
                 const pieceElement = document.createElement('div');
                 pieceElement.className = 'chess-piece';
                 pieceElement.textContent = getPieceSymbol(piece);
+                
+                // Четкие цвета для фигур
+                if (piece === piece.toUpperCase()) {
+                    // Белые фигуры - ярко белые
+                    pieceElement.style.color = '#ffffff';
+                    pieceElement.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.8)';
+                } else {
+                    // Черные фигуры - темно черные
+                    pieceElement.style.color = '#000000';
+                    pieceElement.style.textShadow = '2px 2px 4px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 255, 255, 0.8)';
+                }
+                
                 square.appendChild(pieceElement);
             }
             
@@ -165,7 +177,7 @@ function createChessBoard() {
     }
 }
 
-// Получить символ фигуры
+// Получить символ фигуры - Исправленная версия
 function getPieceSymbol(piece) {
     const symbols = {
         'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',

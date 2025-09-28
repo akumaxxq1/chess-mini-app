@@ -181,11 +181,10 @@ body {
     font-weight: 600;
 }
 
-/* Шахматная доска */
+/* Шахматная доска - Исправленная версия */
 .chess-board {
-    width: 100%;
-    max-width: min(400px, 90vw, 90vh);
-    aspect-ratio: 1;
+    width: min(400px, 90vw, 90vh); /* Фиксированный размер */
+    height: min(400px, 90vw, 90vh); /* Фиксированная высота */
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -194,6 +193,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative; /* Для стабильности */
 }
 
 .chess-square {
@@ -256,7 +256,9 @@ body {
     font-size: 2.5rem;
     z-index: 2;
     position: relative;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
+    font-weight: bold;
 }
 
 /* Игровые контролы */
@@ -423,4 +425,26 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Дополнительные исправления для мобильных */
+@media (max-width: 360px) {
+    .chess-board {
+        width: min(300px, 90vw, 90vh);
+        height: min(300px, 90vw, 90vh);
+    }
+    
+    .chess-piece {
+        font-size: 1.8rem;
+    }
+}
+
+/* Предотвращение искажений */
+.container {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+.chess-board {
+    flex-shrink: 0; /* Предотвращаем сжатие */
 }
