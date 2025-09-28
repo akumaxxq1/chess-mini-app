@@ -457,6 +457,41 @@ body {
     flex-shrink: 0; /* Предотвращаем сжатие */
 }
 
+/* Разметка поля - буквы и цифры */
+.chess-coordinates {
+    position: absolute;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--tg-theme-text-color, #000000);
+    user-select: none;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.chess-coordinates.letters {
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+}
+
+.chess-coordinates.numbers {
+    top: 0;
+    bottom: 0;
+    left: -20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.chess-board-container {
+    position: relative;
+    display: inline-block;
+}
+
 /* ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ - убираем ВСЕ искажения */
 * {
     box-sizing: border-box; /* Включаем границы в размер всех элементов */
@@ -465,6 +500,32 @@ body {
 .chess-board {
     min-width: 400px; /* Минимальная ширина */
     min-height: 400px; /* Минимальная высота */
+}
+
+/* Убираем мелкие поломанности при ходе */
+.chess-square {
+    will-change: auto; /* Отключаем оптимизацию GPU */
+    transform: translateZ(0); /* Принудительное использование GPU */
+    backface-visibility: hidden; /* Убираем мерцание */
+}
+
+.chess-piece {
+    will-change: auto;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Плавные переходы без поломанностей */
+.chess-square.selected {
+    transition: background-color 0.1s ease;
+}
+
+.chess-square.possible-move {
+    transition: background-color 0.1s ease;
+}
+
+.chess-square.possible-capture {
+    transition: background-color 0.1s ease;
 }
 
 /* Для очень маленьких экранов */

@@ -129,10 +129,18 @@ function initializeBoard() {
     ];
 }
 
-// Создание шахматной доски
+// Создание шахматной доски с разметкой
 function createChessBoard() {
     const board = document.getElementById('chessBoard');
     board.innerHTML = '';
+    
+    // Создаем контейнер для доски с разметкой
+    const boardContainer = document.createElement('div');
+    boardContainer.className = 'chess-board-container';
+    
+    // Создаем саму доску
+    const boardGrid = document.createElement('div');
+    boardGrid.className = 'chess-board';
     
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
@@ -174,9 +182,39 @@ function createChessBoard() {
             // Обработчик клика
             square.addEventListener('click', () => handleSquareClick(row, col));
             
-            board.appendChild(square);
+            boardGrid.appendChild(square);
         }
     }
+    
+    // Добавляем разметку поля
+    addBoardCoordinates(boardGrid);
+    
+    // Собираем все вместе
+    boardContainer.appendChild(boardGrid);
+    board.appendChild(boardContainer);
+}
+
+// Добавление координат на доску
+function addBoardCoordinates(boardGrid) {
+    // Буквы (a-h) снизу
+    const letters = document.createElement('div');
+    letters.className = 'chess-coordinates letters';
+    for (let i = 0; i < 8; i++) {
+        const letter = document.createElement('span');
+        letter.textContent = String.fromCharCode(97 + i); // a-h
+        letters.appendChild(letter);
+    }
+    boardGrid.appendChild(letters);
+    
+    // Цифры (1-8) слева
+    const numbers = document.createElement('div');
+    numbers.className = 'chess-coordinates numbers';
+    for (let i = 8; i >= 1; i--) {
+        const number = document.createElement('span');
+        number.textContent = i.toString();
+        numbers.appendChild(number);
+    }
+    boardGrid.appendChild(numbers);
 }
 
 // Получить символ фигуры - Исправленная версия
@@ -511,36 +549,126 @@ function hideAILoading() {
     }
 }
 
-// Получить лучший ход AI - Финальная версия
+// Получить лучший ход AI - УЛУЧШЕННАЯ версия
 function getBestMove() {
     const moves = getAllPossibleMoves('black');
     if (moves.length === 0) return null;
     
-    // Упрощенный алгоритм в зависимости от сложности
+    // Умный алгоритм в зависимости от сложности
     switch (currentDifficulty) {
         case 1: // Новичок - случайный ход
             return moves[Math.floor(Math.random() * moves.length)];
-        case 2: // Легкий - случайный, но избегает потери фигур
+        case 2: // Легкий - избегает потери фигур
             return getRandomSafeMove(moves);
         case 3: // Простой - предпочитает взятие
-            return getCaptureMove(moves) || moves[Math.floor(Math.random() * moves.length)];
-        case 4: // Средний - базовая оценка позиции
-            return getBestMoveByEvaluation(moves, 1);
-        case 5: // Нормальный
-            return getBestMoveByEvaluation(moves, 1);
-        case 6: // Сложный
-            return getBestMoveByEvaluation(moves, 1); // Упрощено
-        case 7: // Трудный
-            return getBestMoveByEvaluation(moves, 2); // Упрощено
-        case 8: // Эксперт
-            return getBestMoveByEvaluation(moves, 2); // Упрощено
-        case 9: // Мастер
-            return getBestMoveByEvaluation(moves, 2); // Упрощено
-        case 10: // Гроссмейстер
-            return getBestMoveByEvaluation(moves, 3); // Упрощено
+            return getCaptureMove(moves) || getRandomSafeMove(moves);
+        case 4: // Средний - базовая стратегия
+            return getStrategicMove(moves, 1);
+        case 5: // Нормальный - улучшенная стратегия
+            return getStrategicMove(moves, 2);
+        case 6: // Сложный - продвинутая стратегия
+            return getStrategicMove(moves, 3);
+        case 7: // Трудный - экспертная стратегия
+            return getStrategicMove(moves, 4);
+        case 8: // Эксперт - мастерская стратегия
+            return getStrategicMove(moves, 5);
+        case 9: // Мастер - гроссмейстерская стратегия
+            return getStrategicMove(moves, 6);
+        case 10: // Гроссмейстер - максимальная стратегия
+            return getStrategicMove(moves, 7);
         default:
             return moves[Math.floor(Math.random() * moves.length)];
     }
+}
+
+// Умная стратегическая функция
+function getStrategicMove(moves, depth) {
+    if (moves.length === 0) return null;
+    
+    // Приоритеты ходов
+    const priorities = [];
+    
+    for (const move of moves) {
+        let score = 0;
+        const [fromRow, fromCol, toRow, toCol] = move;
+        const piece = gameState.board[fromRow][fromCol];
+        const targetPiece = gameState.board[toRow][toCol];
+        
+        // 1. Взятие фигур (высший приоритет)
+        if (targetPiece) {
+            score += getPieceValue(targetPiece) * 100;
+        }
+        
+        // 2. Центральные поля
+        if ((toRow >= 3 && toRow <= 4) && (toCol >= 3 && toCol <= 4)) {
+            score += 20;
+        }
+        
+        // 3. Развитие фигур
+        if (piece === 'N' && toRow >= 2) { // Конь вперед
+            score += 15;
+        }
+        if (piece === 'B' && toRow >= 2) { // Слон вперед
+            score += 10;
+        }
+        
+        // 4. Рокировка
+        if (piece === 'K' && Math.abs(toCol - fromCol) === 2) {
+            score += 30;
+        }
+        
+        // 5. Атака на короля
+        if (targetPiece === 'K') {
+            score += 1000;
+        }
+        
+        // 6. Защита своих фигур
+        if (isPieceUnderAttack(toRow, toCol, 'black')) {
+            score += 50;
+        }
+        
+        priorities.push({ move, score });
+    }
+    
+    // Сортируем по приоритету
+    priorities.sort((a, b) => b.score - a.score);
+    
+    // Возвращаем лучший ход или случайный из топ-3
+    const topMoves = priorities.slice(0, Math.min(3, priorities.length));
+    return topMoves[Math.floor(Math.random() * topMoves.length)].move;
+}
+
+// Получить ценность фигуры
+function getPieceValue(piece) {
+    const values = {
+        'P': 1, 'p': 1,
+        'N': 3, 'n': 3,
+        'B': 3, 'b': 3,
+        'R': 5, 'r': 5,
+        'Q': 9, 'q': 9,
+        'K': 100, 'k': 100
+    };
+    return values[piece] || 0;
+}
+
+// Проверить, атакована ли фигура
+function isPieceUnderAttack(row, col, color) {
+    const isWhite = color === 'white';
+    const opponentColor = isWhite ? 'black' : 'white';
+    
+    // Проверяем атаки от всех фигур противника
+    for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+            const piece = gameState.board[r][c];
+            if (piece && (piece === piece.toUpperCase()) !== isWhite) {
+                const moves = getPossibleMoves(r, c);
+                if (moves.some(([toRow, toCol]) => toRow === row && toCol === col)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 // Получить все возможные ходы для цвета
@@ -744,7 +872,7 @@ function updateGameInfo() {
     }
 }
 
-// Показать подсказку
+// Показать УМНУЮ подсказку
 function showHint() {
     if (gameState.currentPlayer !== 'white' || gameState.gameOver) {
         return;
@@ -752,21 +880,85 @@ function showHint() {
     
     const moves = getAllPossibleMoves('white');
     if (moves.length > 0) {
-        const randomMove = moves[Math.floor(Math.random() * moves.length)];
-        const [fromRow, fromCol, toRow, toCol] = randomMove;
+        // Находим лучший ход для белых
+        const bestMove = getBestMoveForWhite(moves);
+        const [fromRow, fromCol, toRow, toCol] = bestMove;
         
         // Подсветить рекомендуемый ход
         const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
         const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
         
-        fromSquare.style.background = 'rgba(255, 193, 7, 0.5)';
-        toSquare.style.background = 'rgba(255, 193, 7, 0.5)';
-        
-        setTimeout(() => {
-            fromSquare.style.background = '';
-            toSquare.style.background = '';
-        }, 2000);
+        if (fromSquare && toSquare) {
+            fromSquare.style.background = 'rgba(255, 193, 7, 0.7)';
+            toSquare.style.background = 'rgba(255, 193, 7, 0.7)';
+            
+            // Добавляем анимацию
+            fromSquare.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.8)';
+            toSquare.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.8)';
+            
+            setTimeout(() => {
+                fromSquare.style.background = '';
+                toSquare.style.background = '';
+                fromSquare.style.boxShadow = '';
+                toSquare.style.boxShadow = '';
+            }, 3000);
+        }
     }
+}
+
+// Получить лучший ход для белых
+function getBestMoveForWhite(moves) {
+    if (moves.length === 0) return null;
+    
+    const priorities = [];
+    
+    for (const move of moves) {
+        let score = 0;
+        const [fromRow, fromCol, toRow, toCol] = move;
+        const piece = gameState.board[fromRow][fromCol];
+        const targetPiece = gameState.board[toRow][toCol];
+        
+        // 1. Взятие фигур
+        if (targetPiece) {
+            score += getPieceValue(targetPiece) * 100;
+        }
+        
+        // 2. Центральные поля
+        if ((toRow >= 3 && toRow <= 4) && (toCol >= 3 && toCol <= 4)) {
+            score += 20;
+        }
+        
+        // 3. Развитие фигур
+        if (piece === 'N' && toRow <= 5) { // Конь вперед
+            score += 15;
+        }
+        if (piece === 'B' && toRow <= 5) { // Слон вперед
+            score += 10;
+        }
+        
+        // 4. Рокировка
+        if (piece === 'K' && Math.abs(toCol - fromCol) === 2) {
+            score += 30;
+        }
+        
+        // 5. Атака на короля
+        if (targetPiece === 'k') {
+            score += 1000;
+        }
+        
+        // 6. Защита своих фигур
+        if (isPieceUnderAttack(toRow, toCol, 'white')) {
+            score += 50;
+        }
+        
+        priorities.push({ move, score });
+    }
+    
+    // Сортируем по приоритету
+    priorities.sort((a, b) => b.score - a.score);
+    
+    // Возвращаем лучший ход
+    return priorities[0].move;
 }
 
 // Отправить данные в Telegram (если нужно)
@@ -775,3 +967,4 @@ function sendDataToTelegram(data) {
         tg.sendData(JSON.stringify(data));
     }
 }
+
