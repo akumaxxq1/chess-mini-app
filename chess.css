@@ -181,7 +181,7 @@ body {
     font-weight: 600;
 }
 
-/* Шахматная доска - СУПЕР СТАБИЛЬНАЯ версия */
+/* Шахматная доска - УЛЬТИМАТИВНО СТАБИЛЬНАЯ версия */
 .chess-board {
     width: 400px !important; /* СТРОГО фиксированная ширина */
     height: 400px !important; /* СТРОГО фиксированная высота */
@@ -203,6 +203,9 @@ body {
     contain: layout !important; /* Изолируем layout */
     transform: none !important; /* Убираем все трансформации */
     will-change: auto !important; /* Отключаем GPU оптимизацию */
+    backface-visibility: visible !important; /* Убираем мерцание */
+    perspective: none !important; /* Убираем 3D эффекты */
+    transform-style: flat !important; /* Плоский стиль */
 }
 
 .chess-square {
@@ -226,6 +229,9 @@ body {
     transform: none !important; /* Убираем все трансформации */
     will-change: auto !important; /* Отключаем GPU оптимизацию */
     backface-visibility: visible !important; /* Убираем мерцание */
+    perspective: none !important; /* Убираем 3D эффекты */
+    transform-style: flat !important; /* Плоский стиль */
+    isolation: isolate !important; /* Изолируем от других элементов */
 }
 
 .chess-square.light {
@@ -274,12 +280,26 @@ body {
 }
 
 .chess-piece {
-    font-size: 2.5rem;
-    z-index: 2;
-    position: relative;
-    font-weight: 900; /* МАКСИМАЛЬНО жирный */
-    text-shadow: none; /* Убираем тени, делаем через JS */
-    filter: none; /* Убираем фильтры, делаем через JS */
+    font-size: 2rem !important;
+    font-weight: 900 !important;
+    font-family: Arial, sans-serif !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    contain: layout !important;
+    transform: none !important;
+    will-change: auto !important;
+    backface-visibility: visible !important;
+    perspective: none !important;
+    transform-style: flat !important;
+    isolation: isolate !important;
+    text-shadow: none !important;
+    filter: none !important;
+    z-index: 2 !important;
+    position: relative !important;
 }
 
 /* Игровые контролы */

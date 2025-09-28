@@ -173,28 +173,44 @@ function createChessBoard() {
                 square.classList.add('dark');
             }
             
-            // Добавление фигуры с четкими цветами
-            const piece = gameState.board[row][col];
-            if (piece) {
-                const pieceElement = document.createElement('div');
-                pieceElement.className = 'chess-piece';
-                pieceElement.textContent = getPieceSymbol(piece);
-                
-                // МАКСИМАЛЬНЫЙ контраст для фигур
-                if (piece === piece.toUpperCase()) {
-                    // Белые фигуры - ЧИСТО БЕЛЫЕ с черной обводкой
-                    pieceElement.style.color = '#ffffff';
-                    pieceElement.style.textShadow = '2px 2px 0 #000000, -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000, 2px 0 0 #000000, -2px 0 0 #000000';
-                    pieceElement.style.fontWeight = '900';
-                } else {
-                    // Черные фигуры - ЧИСТО ЧЕРНЫЕ с белой обводкой
-                    pieceElement.style.color = '#000000';
-                    pieceElement.style.textShadow = '2px 2px 0 #ffffff, -2px -2px 0 #ffffff, 2px -2px 0 #ffffff, -2px 2px 0 #ffffff, 0 2px 0 #ffffff, 0 -2px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff';
-                    pieceElement.style.fontWeight = '900';
-                }
-                
-                square.appendChild(pieceElement);
-            }
+                   // Добавление фигуры с УНИФИЦИРОВАННЫМИ стилями
+                   const piece = gameState.board[row][col];
+                   if (piece) {
+                       const pieceElement = document.createElement('div');
+                       pieceElement.className = 'chess-piece';
+                       pieceElement.textContent = getPieceSymbol(piece);
+                       
+                       // УНИФИЦИРОВАННЫЕ стили для всех устройств
+                       pieceElement.style.fontSize = '2rem';
+                       pieceElement.style.fontWeight = '900';
+                       pieceElement.style.fontFamily = 'Arial, sans-serif';
+                       pieceElement.style.lineHeight = '1';
+                       pieceElement.style.display = 'flex';
+                       pieceElement.style.alignItems = 'center';
+                       pieceElement.style.justifyContent = 'center';
+                       pieceElement.style.width = '100%';
+                       pieceElement.style.height = '100%';
+                       pieceElement.style.contain = 'layout';
+                       pieceElement.style.transform = 'none';
+                       pieceElement.style.willChange = 'auto';
+                       pieceElement.style.backfaceVisibility = 'visible';
+                       pieceElement.style.perspective = 'none';
+                       pieceElement.style.transformStyle = 'flat';
+                       pieceElement.style.isolation = 'isolate';
+                       
+                       // МАКСИМАЛЬНЫЙ контраст для фигур
+                       if (piece === piece.toUpperCase()) {
+                           // Белые фигуры - ЧИСТО БЕЛЫЕ с черной обводкой
+                           pieceElement.style.color = '#ffffff';
+                           pieceElement.style.textShadow = '2px 2px 0 #000000, -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000, 0 2px 0 #000000, 0 -2px 0 #000000, 2px 0 0 #000000, -2px 0 0 #000000';
+                       } else {
+                           // Черные фигуры - ЧИСТО ЧЕРНЫЕ с белой обводкой
+                           pieceElement.style.color = '#000000';
+                           pieceElement.style.textShadow = '2px 2px 0 #ffffff, -2px -2px 0 #ffffff, 2px -2px 0 #ffffff, -2px 2px 0 #ffffff, 0 2px 0 #ffffff, 0 -2px 0 #ffffff, 2px 0 0 #ffffff, -2px 0 0 #ffffff';
+                       }
+                       
+                       square.appendChild(pieceElement);
+                   }
             
             // Обработчик клика
             square.addEventListener('click', () => handleSquareClick(row, col));
@@ -275,8 +291,9 @@ function addBoardCoordinates(boardGrid) {
     boardGrid.appendChild(numbers);
 }
 
-// Получить символ фигуры - Исправленная версия
+// Получить символ фигуры - УНИФИЦИРОВАННАЯ версия
 function getPieceSymbol(piece) {
+    // УНИФИЦИРОВАННЫЕ символы для всех устройств
     const symbols = {
         'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
         'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟'
